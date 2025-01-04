@@ -11,6 +11,8 @@
 #endif
 
 #import "DataUploader.h"
+#import "EventStorage.h"
+#import "NetworkMonitor.h"
 #import "TrackingSDK.h"
 
 FOUNDATION_EXPORT double TrackingSDKVersionNumber;

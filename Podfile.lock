@@ -1,6 +1,12 @@
 PODS:
+  - FMDB (2.7.12):
+    - FMDB/standard (= 2.7.12)
+  - FMDB/Core (2.7.12)
+  - FMDB/standard (2.7.12):
+    - FMDB/Core
   - Reachability (3.2)
   - TrackingSDK (0.2.1):
+    - FMDB (~> 2.7)
     - Reachability (~> 3.2.0)
 
 DEPENDENCIES:
@@ -8,6 +14,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - FMDB
     - Reachability
 
 EXTERNAL SOURCES:
@@ -15,9 +22,10 @@ EXTERNAL SOURCES:
     :path: "./TrackingSDK"
 
 SPEC CHECKSUMS:
+  FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  TrackingSDK: 61e950b189cea1633ce5a760c394eef4964b88d9
+  TrackingSDK: 59004f47751f66fee180d857e323b63f88b31ea9
 
-PODFILE CHECKSUM: dd25a62eb7cab1aad0354d569fefafbba9038dd1
+PODFILE CHECKSUM: 5a2e14d4f1c3876ecbb720f733db959957bc9405
 
 COCOAPODS: 1.16.2

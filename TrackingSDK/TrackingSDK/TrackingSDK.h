@@ -1,18 +1,19 @@
-//
-//  TrackingSDK.h
-//  TrackingSDK
-//
-//  Created by sylar on 2025/1/4.
-//
+// TrackingSDK.h
 
 #import <Foundation/Foundation.h>
+#import "NetworkMonitor.h"
+#import "DataUploader.h"
+#import "EventStorage.h"
 
-//! Project version number for TrackingSDK.
-FOUNDATION_EXPORT double TrackingSDKVersionNumber;
+@interface TrackingSDK : NSObject
 
-//! Project version string for TrackingSDK.
-FOUNDATION_EXPORT const unsigned char TrackingSDKVersionString[];
++ (instancetype)sharedInstance;
 
-// In this header, you should import all the public headers of your framework using statements like #import <TrackingSDK/PublicHeader.h>
+// 初始化 SDK，设置 AppID 和服务器 URL
+- (void)initializeWithAppID:(NSString *)appID
+                 serverURL:(NSString *)url;
 
+// 记录事件，自动包含全局属性
+- (void)trackEvent:(NSString *)eventName;
 
+@end

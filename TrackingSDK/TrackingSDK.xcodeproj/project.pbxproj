@@ -28,6 +28,9 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		2C2CF2232D28FE9E00B740D1 /* Exceptions for "TrackingSDK" folder in "TrackingSDK" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				NetworkMonitor.m,
+			);
 			publicHeaders = (
 				TrackingSDK.h,
 			);
@@ -35,11 +38,22 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		2C2F20E72D29047600F5CAA0 /* Exceptions for "TrackingSDK" folder in "Headers" phase from "TrackingSDK" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 2C2CF20C2D28FE9E00B740D1 /* Headers */;
+			membershipExceptions = (
+				NetworkMonitor.m,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		2C2CF2132D28FE9E00B740D1 /* TrackingSDK */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				2C2CF2232D28FE9E00B740D1 /* Exceptions for "TrackingSDK" folder in "TrackingSDK" target */,
+				2C2F20E72D29047600F5CAA0 /* Exceptions for "TrackingSDK" folder in "Headers" phase from "TrackingSDK" target */,
 			);
 			path = TrackingSDK;
 			sourceTree = "<group>";
