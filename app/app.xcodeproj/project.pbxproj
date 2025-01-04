@@ -7,11 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2C2AB7F02D27E08400CC0282 /* TrackingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2AB7EF2D27E08400CC0282 /* TrackingSDK.framework */; };
-		2CD252402D27CCFF00FE6E80 /* AppTrackingTransparency.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD2523F2D27CCFF00FE6E80 /* AppTrackingTransparency.framework */; };
-		2CD252422D27CD0400FE6E80 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD252412D27CD0400FE6E80 /* AdSupport.framework */; };
-		2CD252442D27CD0D00FE6E80 /* Network.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD252432D27CD0D00FE6E80 /* Network.framework */; };
-		B3C327FE47BBB266CB964615 /* Pods_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0250B616F7CF9D49EDFBFFC /* Pods_app.framework */; };
+		151D9B39AA5C8949591AF8A3 /* Pods_app.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0250B616F7CF9D49EDFBFFC /* Pods_app.framework */; };
+		2C4F56652D2929F5000D24B7 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CD252412D27CD0400FE6E80 /* AdSupport.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +43,8 @@
 
 /* Begin PBXFileReference section */
 		2C2AB7EF2D27E08400CC0282 /* TrackingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TrackingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C4F562E2D292046000D24B7 /* FMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = FMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C4F56662D292A07000D24B7 /* TrackingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TrackingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD251C82D27B71400FE6E80 /* app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD251D82D27B71700FE6E80 /* appTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = appTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CD251E22D27B71700FE6E80 /* appUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = appUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,11 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C2AB7F02D27E08400CC0282 /* TrackingSDK.framework in Frameworks */,
-				2CD252442D27CD0D00FE6E80 /* Network.framework in Frameworks */,
-				2CD252422D27CD0400FE6E80 /* AdSupport.framework in Frameworks */,
-				2CD252402D27CCFF00FE6E80 /* AppTrackingTransparency.framework in Frameworks */,
-				B3C327FE47BBB266CB964615 /* Pods_app.framework in Frameworks */,
+				2C4F56652D2929F5000D24B7 /* AdSupport.framework in Frameworks */,
+				151D9B39AA5C8949591AF8A3 /* Pods_app.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +144,8 @@
 		2CD2523A2D27CA9A00FE6E80 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2C4F56662D292A07000D24B7 /* TrackingSDK.framework */,
+				2C4F562E2D292046000D24B7 /* FMDB.framework */,
 				2C2AB7EF2D27E08400CC0282 /* TrackingSDK.framework */,
 				2CD252472D27CDA700FE6E80 /* sdk.framework */,
 				2CD252432D27CD0D00FE6E80 /* Network.framework */,

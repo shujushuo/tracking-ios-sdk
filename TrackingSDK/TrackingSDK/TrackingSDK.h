@@ -1,9 +1,7 @@
 // TrackingSDK.h
 
 #import <Foundation/Foundation.h>
-#import "NetworkMonitor.h"
-#import "DataUploader.h"
-#import "EventStorage.h"
+
 
 @interface TrackingSDK : NSObject
 

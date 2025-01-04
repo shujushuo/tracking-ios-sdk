@@ -5,6 +5,9 @@
 #import <AdSupport/AdSupport.h>
 #import <UIKit/UIKit.h>
 #import <sys/utsname.h>
+#import "NetworkMonitor.h"
+#import "DataUploader.h"
+#import "EventStorage.h"
 
 
 @interface TrackingSDK ()

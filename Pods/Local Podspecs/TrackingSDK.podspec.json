@@ -4,7 +4,10 @@
   "summary": "A tracking SDK for iOS applications.",
   "description": "TrackingSDK is a framework that provides event tracking capabilities for iOS applications.",
   "homepage": "https://github.com/shujushuo/tracking-ios-sdk",
-  "license": "Apache License, Version 2.0",
+  "license": {
+    "type": "Apache License, Version 2.0",
+    "file": "../LICENSE"
+  },
   "authors": {
     "jiangzhenxing": "jiangzhx@gmail.com"
   },
