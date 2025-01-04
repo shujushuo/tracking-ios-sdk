@@ -10,6 +10,7 @@
 #endif
 #endif
 
+#import "DataUploader.h"
 #import "TrackingSDK.h"
 
 FOUNDATION_EXPORT double TrackingSDKVersionNumber;

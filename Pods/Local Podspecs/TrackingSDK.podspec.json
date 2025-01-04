@@ -9,17 +9,17 @@
     "jiangzhenxing": "jiangzhx@gmail.com"
   },
   "source": {
-    "git": "git@github.com:shujushuo/tracking-ios-sdk.git",
-    "tag": "0.2.1"
+    "git": "https://github.com/shujushuo/tracking-ios-sdk.git",
+    "branch": "main"
   },
   "platforms": {
     "ios": "10.0"
   },
-  "source_files": "TrackingSDK/*.{swift,h,m}",
+  "source_files": "TrackingSDK/*.{h,m}",
   "requires_arc": true,
   "dependencies": {
-    "ReachabilitySwift": [
-      "~>5.2.0"
+    "Reachability": [
+      "~> 3.2.0"
     ]
   }
 }

@@ -1,22 +1,22 @@
 PODS:
-  - ReachabilitySwift (5.2.4)
+  - Reachability (3.2)
   - TrackingSDK (0.2.1):
-    - ReachabilitySwift (~> 5.2.0)
+    - Reachability (~> 3.2.0)
 
 DEPENDENCIES:
   - TrackingSDK (from `./TrackingSDK`)
 
 SPEC REPOS:
   trunk:
-    - ReachabilitySwift
+    - Reachability
 
 EXTERNAL SOURCES:
   TrackingSDK:
     :path: "./TrackingSDK"
 
 SPEC CHECKSUMS:
-  ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
-  TrackingSDK: ce34f57fcf53befe180a9f2d33f9a91d6d6975ea
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  TrackingSDK: 61e950b189cea1633ce5a760c394eef4964b88d9
 
 PODFILE CHECKSUM: dd25a62eb7cab1aad0354d569fefafbba9038dd1
 
