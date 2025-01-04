@@ -1,9 +1,11 @@
-platform :ios, '10.0'
+platform :ios, '12.0'
 
-use_frameworks!
+use_frameworks! 
 
 # 指定 Workspace 名称
 workspace 'tracking-ios-sdk.xcworkspace'
+
+project 'app/app.xcodeproj'
 
 # 集成 App 的依赖
 target 'app' do

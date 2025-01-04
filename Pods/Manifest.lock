@@ -1,3 +1,23 @@
-PODFILE CHECKSUM: 30390d217ba9baf63ebc23eff5666cb543efd078
+PODS:
+  - ReachabilitySwift (5.2.4)
+  - TrackingSDK (0.2.1):
+    - ReachabilitySwift (~> 5.2.0)
+
+DEPENDENCIES:
+  - TrackingSDK (from `./TrackingSDK`)
+
+SPEC REPOS:
+  trunk:
+    - ReachabilitySwift
+
+EXTERNAL SOURCES:
+  TrackingSDK:
+    :path: "./TrackingSDK"
+
+SPEC CHECKSUMS:
+  ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
+  TrackingSDK: ce34f57fcf53befe180a9f2d33f9a91d6d6975ea
+
+PODFILE CHECKSUM: dd25a62eb7cab1aad0354d569fefafbba9038dd1
 
 COCOAPODS: 1.16.2
