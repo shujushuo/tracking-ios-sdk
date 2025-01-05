@@ -14,6 +14,7 @@ profile
 *~.nib
 
 build/
+DerivedData
 
 *.pbxuser
 *.perspective

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2C2CF21C2D28FE9E00B740D1 /* TrackingSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C2CF2112D28FE9E00B740D1 /* TrackingSDK.framework */; };
+		2CF9D29F2D2A21A600672A96 /* TrackingSDK.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 2CF9D29E2D2A21A600672A96 /* TrackingSDK.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,6 +24,7 @@
 /* Begin PBXFileReference section */
 		2C2CF2112D28FE9E00B740D1 /* TrackingSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TrackingSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C2CF21B2D28FE9E00B740D1 /* TrackingSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TrackingSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CF9D29E2D2A21A600672A96 /* TrackingSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = TrackingSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -87,6 +89,7 @@
 		2C2CF2072D28FE9E00B740D1 = {
 			isa = PBXGroup;
 			children = (
+				2CF9D29E2D2A21A600672A96 /* TrackingSDK.podspec */,
 				2C2CF2132D28FE9E00B740D1 /* TrackingSDK */,
 				2C2CF21F2D28FE9E00B740D1 /* TrackingSDKTests */,
 				2C2CF2122D28FE9E00B740D1 /* Products */,
@@ -203,6 +206,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CF9D29F2D2A21A600672A96 /* TrackingSDK.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

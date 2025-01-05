@@ -7,7 +7,6 @@
 #import <sys/utsname.h>
 #import "NetworkMonitor.h"
 #import "DataUploader.h"
-#import "EventStorage.h"
 
 
 @interface TrackingSDK ()
