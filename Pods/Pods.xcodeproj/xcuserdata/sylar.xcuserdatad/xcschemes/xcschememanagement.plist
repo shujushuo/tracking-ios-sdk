@@ -4,33 +4,39 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>FMDB-FMDB_Privacy.xcscheme</key>
+		<key>FMDB-FMDB_Privacy.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>0</integer>
 		</dict>
-		<key>FMDB.xcscheme</key>
+		<key>FMDB.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>2</integer>
 		</dict>
-		<key>Pods-app.xcscheme</key>
+		<key>Pods-app.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<true/>
+			<key>orderHint</key>
+			<integer>4</integer>
 		</dict>
-		<key>Reachability.xcscheme</key>
+		<key>Reachability.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<false/>
+			<key>orderHint</key>
+			<integer>5</integer>
 		</dict>
-		<key>TrackingSDK.xcscheme</key>
+		<key>TrackingSDK.xcscheme_^#shared#^_</key>
 		<dict>
-			<key>isShown</key>
-			<true/>
+			<key>orderHint</key>
+			<integer>1</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
-	<dict/>
+	<dict>
+		<key>51FE7B3023D714C5AE8BC2F38A9C77E0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
 </dict>
 </plist>

@@ -1,26 +1,41 @@
 import SwiftUI
 import TrackingSDK
+import AdSupport
+import AppTrackingTransparency
 
 @available(iOS 14.0, *)
 @main
 struct appApp: App {
     init() {
+        requestIDFAAuthorization()
+
         // 初始化 SDK
+        // 确保在请求IDFA授权之后初始化SDK
         TrackingSDK.sharedInstance().initialize(withAppID: "https://127.0.0.1/up", serverURL: "APPID")
-//        Tracking.shared.initialize(serverURL: "https://your-server-url.com/upload", appid: "YOUR_APP_ID")
-//        // 可选：记录一个安装事件
-//        let additionalContext: [String: Any] = [
-//            "channelid": "example_channelid",
-//            "user_level": 5,
-//            "is_premium": true,
-//            "score": 98.6
-//        ]
-//        Tracking.shared.logEvent(xwhat: "install", xwho: "someoneelse", xcontext: additionalContext)
     }
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+        }
+    }
+    
+    func requestIDFAAuthorization() {
+        // 直接调用ATTrackingManager.requestTrackingAuthorization
+        ATTrackingManager.requestTrackingAuthorization { status in
+            switch status {
+            case .authorized:
+                print("IDFA授权成功")
+                // 可以访问IDFA
+                let idfa = ASIdentifierManager.shared().advertisingIdentifier
+                print("IDFA: \(idfa)")
+                
+            case .denied, .restricted, .notDetermined:
+                print("IDFA授权失败或未决定")
+                // 无法获取IDFA，可能需要跳转到设置页面引导用户修改
+            @unknown default:
+                print("未知的状态")
+            }
         }
     }
 }

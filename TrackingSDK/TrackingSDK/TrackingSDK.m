@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) NSString *appID;
 @property (nonatomic, strong) NSString *serverURL;
+@property (nonatomic, strong) NSString *channelID;
 
 @end
 
@@ -28,9 +29,16 @@
 }
 
 - (void)initializeWithAppID:(NSString *)appID
-                 serverURL:(NSString *)url {
+                  serverURL:(NSString *)url{
+    [self initializeWithAppID:appID serverURL:url channelID:nil];
+}
+
+- (void)initializeWithAppID:(NSString *)appID
+                 serverURL:(NSString *)url
+                 channelID:(NSString *)channelID{
     self.appID = appID;
     self.serverURL = url;
+    self.channelID = channelID ?: @"DEFAULT";
     
     [[DataUploader sharedInstance] setServerURL:url];
     [[NetworkMonitor sharedInstance] startMonitoring];
@@ -43,7 +51,7 @@
     }
     
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
-    event[@"appid"] = self.appID ? self.appID : @"";
+    event[@"appid"] = self.appID;
     event[@"xcontext"] = [self currentXContext];
     event[@"xwhat"] = eventName;
     event[@"xwhen"] = @([[NSDate date] timeIntervalSince1970] * 1000); // 毫秒时间戳

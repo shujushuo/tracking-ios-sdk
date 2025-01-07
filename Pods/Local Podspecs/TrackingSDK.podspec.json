@@ -28,5 +28,6 @@
       "~> 2.7"
     ]
   },
-  "frameworks": "AdSupport"
+  "frameworks": "AdSupport",
+  "vendored_frameworks": "TrackingSDK.framework"
 }

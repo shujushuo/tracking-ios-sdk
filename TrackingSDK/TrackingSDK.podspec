@@ -22,5 +22,6 @@ Pod::Spec.new do |s|
     s.dependency 'FMDB', '~> 2.7'
 
     s.frameworks = 'AdSupport'
+    s.vendored_frameworks = 'TrackingSDK.framework'
 
   end
