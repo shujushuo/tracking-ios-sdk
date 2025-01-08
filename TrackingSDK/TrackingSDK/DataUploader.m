@@ -20,8 +20,6 @@
     return sharedInstance;
 }
 
-// 不手动实现 setServerURL:，让编译器自动生成 setter 和 getter
-
 - (void)uploadAllStoredEventsWithCompletion:(void (^)(BOOL success))completion {
     NSArray<NSDictionary *> *events = [[EventStorage sharedInstance] retrieveAllEvents];
     

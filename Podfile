@@ -11,7 +11,8 @@ target 'app' do
   # Pods for app
   pod 'Reachability', '~> 3.2.0'
   pod 'FMDB', '~> 2.7'
-
+  
+  
   # 集成本地的 TrackingSDK
   pod 'TrackingSDK', :path => './TrackingSDK'
 

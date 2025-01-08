@@ -1,9 +1,10 @@
 import SwiftUI
+import TrackingSDK
 
 struct HomeView: View {
-    @State private var serverUrl: String = ""
-    @State private var appid: String = ""
-    @State private var channelid: String = ""
+    @State private var serverUrl: String = "http://127.0.0.1:8090/"
+    @State private var appid: String = "APPID"
+    @State private var channelid: String = "DEFAULT"
     
     var body: some View {
         ScrollView {
@@ -17,6 +18,8 @@ struct HomeView: View {
                     Spacer()
                 }
                 .padding(.top) // 适当的顶部间距，避免和屏幕顶端紧贴
+                
+                // 服务器地址输入框
                 VStack(alignment: .leading) {
                     Text("服务器地址")
                         .font(.headline)
@@ -47,9 +50,8 @@ struct HomeView: View {
                     }
                 }
                 
-                Button(action: {
-                    print("保存配置并初始化SDK")
-                }) {
+                // 保存配置并初始化SDK按钮
+                Button(action: saveAndInitializeSDK) {
                     Text("保存配置并初始化SDK")
                         .frame(maxWidth: .infinity,minHeight: 15)
                         .padding()
@@ -58,64 +60,54 @@ struct HomeView: View {
                         .cornerRadius(5)
                 }
                 
-                Button(action: {
-                    print("激活")
-                }) {
-                    Text("激活")
-                        .frame(maxWidth: .infinity,minHeight: 15)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }
-                
-                Button(action: {
-                    print("启动")
-                }) {
-                    Text("启动")
-                        .frame(maxWidth: .infinity,minHeight: 15)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }
-                
-                Button(action: {
-                    print("登录")
-                }) {
-                    Text("登录")
-                        .frame(maxWidth: .infinity,minHeight: 15)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }
-                
-                Button(action: {
-                    print("注册")
-                }) {
-                    Text("注册")
-                        .frame(maxWidth: .infinity,minHeight: 15)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }
-                
-                Button(action: {
-                    print("付费")
-                }) {
-                    Text("付费")
-                        .frame(maxWidth: .infinity,minHeight: 15)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
-                }
+                // 其他按钮
+                actionButton(title: "激活")
+                actionButton(title: "启动")
+                actionButton(title: "登录")
+                actionButton(title: "注册")
+                actionButton(title: "付费")
                 
                 Spacer()
             }
             .padding()
+            .onAppear(perform: loadSavedConfig) // 加载保存的配置
+        }
+    }
+    
+    // 保存配置并初始化SDK
+    private func saveAndInitializeSDK() {
+        UserDefaults.standard.set(serverUrl, forKey: "serverURL")
+        UserDefaults.standard.set(appid, forKey: "appid")
+        UserDefaults.standard.set(channelid, forKey: "channelID")
+        
+        TrackingSDK.sharedInstance().initialize(appid, serverURL: serverUrl, channelID: channelid)
+        print("保存配置并初始化SDK")
+    }
+    
+    // 加载保存的配置
+    private func loadSavedConfig() {
+        if let savedServerURL = UserDefaults.standard.string(forKey: "serverURL") {
+            serverUrl = savedServerURL
+        }
+        if let savedAppID = UserDefaults.standard.string(forKey: "appid") {
+            appid = savedAppID
+        }
+        if let savedChannelID = UserDefaults.standard.string(forKey: "channelID") {
+            channelid = savedChannelID
+        }
+    }
+    
+    // 创建通用的按钮
+    private func actionButton(title: String) -> some View {
+        Button(action: {
+            print("\(title)按钮被点击")
+        }) {
+            Text(title)
+                .frame(maxWidth: .infinity, minHeight: 15)
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(5)
         }
     }
 }

@@ -2,64 +2,26 @@ import SwiftUI
 import AdSupport
 import AppTrackingTransparency
 import UIKit
+import TrackingSDK
 
 struct SettingsView: View {
-    
+    @State private var showAlert: Bool = false
+    @State private var alertMessage: String = ""
     // 用 @State 保存设备信息
     @State private var features: [(title: String, text: String)] = []
     // 获取设备信息的方法
     private func getDeviceInfo() -> [(title: String, text: String)] {
-
-        let device = UIDevice.current
-        let installID = UUID().uuidString // 用UUID生成一个Install ID
-        
-        // 返回包含所有设备信息的数组
         return [
-            ("设备品牌", device.name), // 设备品牌，例如 iPhone 12
-            ("设备型号", getDeviceModel()), // 获取设备型号
-            ("系统版本", device.systemVersion), // 系统版本，例如 iOS 16.4
-            ("Install ID", installID), // 用UUID生成的Install ID
-            ("IDFA", getIDFA()), // 获取IDFA
-            ("CAID", "自定义的CAID"), // 这里是占位符
-            ("IDFV", getIDFV()) // 获取IDFV
+            ("设备品牌", "apple"), // 设备品牌，例如 iPhone 12
+            ("设备型号", TrackingSDK.sharedInstance().getDeviceModel()), // 获取设备型号
+            ("系统版本", TrackingSDK.sharedInstance().getSystemVersion()), // 系统版本，例如 iOS 16.4
+            ("IDFA", TrackingSDK.sharedInstance().getIDFA()), // 获取IDFA
+            ("CAID", TrackingSDK.sharedInstance().getCAID()), // 获取CAID
+            ("IDFV", TrackingSDK.sharedInstance().getIDFV()), // 获取IDFV
+            ("Install ID", TrackingSDK.sharedInstance().getInstallID()), // 用UUID生成的Install ID
+            ("包名", TrackingSDK.sharedInstance().getPkgName()), // 系统版本，例如
+            ("包版本", TrackingSDK.sharedInstance().getPkgVersion()), // 系统版本，例如 1.0.0
         ]
-    }
-    
-    private func getDeviceModel() -> String {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        
-        let model = withUnsafePointer(to: &systemInfo.machine) { (pointer) -> String in
-            let data = Data(bytes: pointer, count: Int(_SYS_NAMELEN))
-            if let model = String(data: data, encoding: .utf8) {
-                return model.trimmingCharacters(in: .controlCharacters)
-            }
-            return "Unknown"
-        }
-        
-        // 通过硬件标识符映射表转换硬件标识符为设备名称
-        return model
-    }
-    
-    // 获取IDFA的方法
-    private func getIDFA() -> String {
-        var idfaString = "IDFA 未授权"
-        
-        // 检查用户是否已授权
-        if ATTrackingManager.trackingAuthorizationStatus == .authorized {
-            // 如果授权，获取IDFA
-            idfaString = ASIdentifierManager.shared().advertisingIdentifier.uuidString
-        } else {
-            // 如果未授权，提示用户
-            idfaString = "IDFA 未启用"
-        }
-        
-        return idfaString
-    }
-    
-    // 获取IDFV的方法
-    private func getIDFV() -> String {
-        return UIDevice.current.identifierForVendor?.uuidString ?? "IDFV 未获取"
     }
     
     // 在视图初始化时加载设备信息
@@ -67,7 +29,7 @@ struct SettingsView: View {
         // 初始化时计算设备信息
         _features = State(initialValue: getDeviceInfo())
     }
-
+    
     var body: some View {
         ScrollView { // 用ScrollView包装整个内容，防止溢出
             VStack {
@@ -81,30 +43,36 @@ struct SettingsView: View {
                     Spacer()
                 }
                 .padding(.top) // 适当的顶部间距，避免和屏幕顶端紧贴
-
+                
                 // 使用ForEach来创建每一组
                 ForEach(features, id: \.title) { feature in
                     Group {
                         VStack(alignment: .leading, spacing: 12) {
-                            // 每组的标题
-                            Text(feature.title)
-                                .font(.headline)
-                                .padding(.bottom, 4)
-
-                            // HStack：文本框和按钮在同一行
+                            // HStack：标题和按钮在同一行
                             HStack {
-                                // 文本框（不可编辑）
-                                TextField("", text: .constant(feature.text))
-                                    .disabled(true) // 禁用编辑
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(8)
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(8)
-
+                                // 每组的标题
+                                Text(feature.title)
+                                    .font(.headline)
+                                    .padding(.bottom, 4)
+                                    .frame(maxWidth: .infinity, alignment: .leading)  // 左对齐
+                                
+                                
                                 // 复制按钮
                                 Button(action: {
                                     // 按钮点击事件，复制到剪贴板
                                     UIPasteboard.general.string = feature.text
+                                    
+                                    // 检查剪贴板内容
+                                    if UIPasteboard.general.string == feature.text {
+                                        alertMessage = "复制成功！"
+                                    } else {
+                                        alertMessage = "复制失败！"
+                                    }
+                                    showAlert = true
+                                    // 延迟关闭提示
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                        showAlert = false
+                                    }
                                 }) {
                                     Text("Copy")
                                         .padding(8)
@@ -112,8 +80,19 @@ struct SettingsView: View {
                                         .foregroundColor(.white)
                                         .cornerRadius(8)
                                 }
-                                .padding(.leading, 3) // 给按钮与文本框之间添加一点水平间距
+                                .padding(.leading, 3)
+                                .frame(maxWidth: .infinity, alignment: .trailing)  // 右对齐
+                                .alert(isPresented: $showAlert) {
+                                    Alert(title: Text(alertMessage), dismissButton: .default(Text("OK")))
+                                }
                             }
+                            // 文本框（不可编辑）
+                            TextField("", text: .constant(feature.text))
+                                .disabled(true) // 禁用编辑
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(8)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(8)
                         }
                         .padding()
                         .background(Color.white)
