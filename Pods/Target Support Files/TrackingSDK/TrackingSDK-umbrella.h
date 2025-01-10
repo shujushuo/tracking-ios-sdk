@@ -12,7 +12,9 @@
 
 #import "DataUploader.h"
 #import "EventStorage.h"
+#import "MD5Util.h"
 #import "NetworkMonitor.h"
+#import "TrackingID.h"
 #import "TrackingSDK.h"
 
 FOUNDATION_EXPORT double TrackingSDKVersionNumber;

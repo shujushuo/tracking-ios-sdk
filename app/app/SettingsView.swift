@@ -13,14 +13,14 @@ struct SettingsView: View {
     private func getDeviceInfo() -> [(title: String, text: String)] {
         return [
             ("设备品牌", "apple"), // 设备品牌，例如 iPhone 12
-            ("设备型号", TrackingSDK.sharedInstance().getDeviceModel()), // 获取设备型号
-            ("系统版本", TrackingSDK.sharedInstance().getSystemVersion()), // 系统版本，例如 iOS 16.4
-            ("IDFA", TrackingSDK.sharedInstance().getIDFA()), // 获取IDFA
-            ("CAID", TrackingSDK.sharedInstance().getCAID()), // 获取CAID
-            ("IDFV", TrackingSDK.sharedInstance().getIDFV()), // 获取IDFV
-            ("Install ID", TrackingSDK.sharedInstance().getInstallID()), // 用UUID生成的Install ID
-            ("包名", TrackingSDK.sharedInstance().getPkgName()), // 系统版本，例如
-            ("包版本", TrackingSDK.sharedInstance().getPkgVersion()), // 系统版本，例如 1.0.0
+            ("设备型号", TrackingID.sharedInstance().getModel()), // 获取设备型号
+            ("系统版本", TrackingID.sharedInstance().getSystemVersion()), // 系统版本，例如 iOS 16.4
+            ("IDFA", TrackingID.sharedInstance().getIDFA()), // 获取IDFA
+            ("CAID", TrackingID.sharedInstance().getTrackingID()), // 获取CAID
+            ("IDFV", TrackingID.sharedInstance().getIDFV()), // 获取IDFV
+            ("Install ID", TrackingID.sharedInstance().getInstallID()), // 用UUID生成的Install ID
+            ("包名", TrackingID.sharedInstance().getPkgName()), // 系统版本，例如
+            ("包版本", TrackingID.sharedInstance().getPkgVersion()), // 系统版本，例如 1.0.0
         ]
     }
     

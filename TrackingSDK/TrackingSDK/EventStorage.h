@@ -8,6 +8,6 @@
 
 - (void)saveEvent:(NSDictionary *)event;
 - (NSArray<NSDictionary *> *)retrieveAllEvents;
-- (void)removeEvents:(NSArray<NSDictionary *> *)events;
+- (void)removeEventsWithIds:(NSArray<NSDictionary *> *)events;
 
 @end

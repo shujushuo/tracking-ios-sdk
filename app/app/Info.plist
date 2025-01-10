@@ -2,26 +2,33 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-					<key>UISceneStoryboardFile</key>
-					<string>Main</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>我们需要访问您的广告标识符（IDFA）来提供更好的广告体验。</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>我们需要访问您的广告标识符（IDFA）来提供更好的广告体验。</string>
+    
+    <key>UIUserInterfaceStyle</key>
+    <string>Light</string>
+    
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <!-- 允许所有 HTTP 请求（仅用于开发和测试，生产环境不推荐） -->
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        
+        <!-- 或者，仅允许特定域名/IP 使用 HTTP -->
+        <key>NSExceptionDomains</key>
+        <dict>
+            <key>10.1.67.15</key>
+            <dict>
+                <key>NSExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
+                <key>NSIncludesSubdomains</key>
+                <true/>
+            </dict>
+        </dict>
+    </dict>
+    
+    <!-- 添加本地网络使用描述（iOS 14+） -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>需要访问本地网络以上传事件。</string>
 </dict>
 </plist>

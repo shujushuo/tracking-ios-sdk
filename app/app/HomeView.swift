@@ -23,7 +23,7 @@ struct HomeView: View {
                 VStack(alignment: .leading) {
                     Text("服务器地址")
                         .font(.headline)
-                    TextField("http://10.1.64.179:8090/", text: $serverUrl)
+                    TextField("", text: $serverUrl)
                         .padding()
                         .background(Color.gray.opacity(0.1))
                         .cornerRadius(5)
@@ -34,7 +34,7 @@ struct HomeView: View {
                     VStack(alignment: .leading) {
                         Text("APP ID")
                             .font(.headline)
-                        TextField("APPID", text: $appid)
+                        TextField("", text: $appid)
                             .padding()
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(5)
@@ -43,7 +43,7 @@ struct HomeView: View {
                     VStack(alignment: .leading) {
                         Text("Channel ID")
                             .font(.headline)
-                        TextField("DEFAULT", text: $channelid)
+                        TextField("", text: $channelid)
                             .padding()
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(5)
@@ -61,12 +61,60 @@ struct HomeView: View {
                 }
                 
                 // 其他按钮
-                actionButton(title: "激活")
-                actionButton(title: "启动")
-                actionButton(title: "登录")
-                actionButton(title: "注册")
-                actionButton(title: "付费")
-                
+                Button(action: {
+                    TrackingSDK.sharedInstance().trackInstallEvent()
+                }) {
+                    Text("激活")
+                        .frame(maxWidth: .infinity, minHeight: 15)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                }
+                Button(action: {
+                    TrackingSDK.sharedInstance().trackStartupEvent()
+                }) {
+                    Text("启动")
+                        .frame(maxWidth: .infinity, minHeight: 15)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                }
+                Button(action: {
+                    TrackingSDK.sharedInstance().trackRegisterEvent("example_xwho")
+                }) {
+                    Text("注册")
+                        .frame(maxWidth: .infinity, minHeight: 15)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                }
+                Button(action: {
+                    TrackingSDK.sharedInstance().trackLoginEvent("example_xwho")
+                }) {
+                    Text("登录")
+                        .frame(maxWidth: .infinity, minHeight: 15)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                }
+                Button(action: {
+                    TrackingSDK.sharedInstance().trackPaymentEvent("example_xwho",
+                                                                   transactionID: "exampe_transactionid",
+                                                                   paymentType: "wechat",
+                                                                   currencyType: CurrencyType.CNY,
+                                                                   currencyAmount: 0.99)
+                }) {
+                    Text("付费")
+                        .frame(maxWidth: .infinity, minHeight: 15)
+                        .padding()
+                        .background(Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(5)
+                }                
                 Spacer()
             }
             .padding()

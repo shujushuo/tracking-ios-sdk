@@ -53,6 +53,7 @@
     NSString *eventString = @"";
     if (!error && jsonData) {
         eventString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        
     } else {
         NSLog(@"Error serializing event: %@", error.localizedDescription);
     }
@@ -97,22 +98,14 @@
     return [eventsArray copy];
 }
 
-- (void)removeEvents:(NSArray<NSDictionary *> *)eventsToRemove {
-    NSMutableArray<NSNumber *> *eventIDs = [NSMutableArray array];
-    for (NSDictionary *event in eventsToRemove) {
-        NSNumber *eventID = event[@"id"];
-        if (eventID) {
-            [eventIDs addObject:eventID];
-        }
-    }
-    
-    if (eventIDs.count == 0) {
+- (void)removeEventsWithIds:(NSArray<NSNumber *> *)eventIds {
+    if (eventIds.count == 0) {
         return;
     }
     
-    // 构建 SQL IN 子句
+    // 创建逗号分隔的id字符串
     NSMutableArray<NSString *> *idStrings = [NSMutableArray array];
-    for (NSNumber *idNumber in eventIDs) {
+    for (NSNumber *idNumber in eventIds) {
         [idStrings addObject:[idNumber stringValue]];
     }
     NSString *idsString = [idStrings componentsJoinedByString:@","];
@@ -122,9 +115,10 @@
     [self.dbQueue inDatabase:^(FMDatabase *db) {
         BOOL success = [db executeUpdate:deleteQuery];
         if (!success) {
-            NSLog(@"Failed to delete events: %@", [db lastErrorMessage]);
+            NSLog(@"Failed to delete events with ids %@: %@", idsString, [db lastErrorMessage]);
+        } else {
+            NSLog(@"Successfully deleted events with ids: %@", idsString);
         }
     }];
 }
-
 @end

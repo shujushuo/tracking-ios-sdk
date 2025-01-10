@@ -4,3 +4,4 @@
 
 #import <TrackingSDK/TrackingSDK.h>
 
+#import <TrackingSDK/TrackingID.h>
