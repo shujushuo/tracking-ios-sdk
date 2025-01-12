@@ -1,4 +1,4 @@
-platform :ios, '15.0'
+platform :ios, '12.0'
 
 # 指定 Workspace 名称
 workspace 'appDemo.xcworkspace'
@@ -8,6 +8,7 @@ project 'app/app.xcodeproj'
 # 集成 App 的依赖
 target 'app' do
   use_frameworks!
+  use_modular_headers!
   
   # 集成本地的 TrackingSDK
   pod 'TrackingSDK', :path => './TrackingSDK'
@@ -24,5 +25,4 @@ target 'app' do
       end
   	end
   end
-  
 end
