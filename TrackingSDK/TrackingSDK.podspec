@@ -17,8 +17,6 @@ Pod::Spec.new do |s|
     s.source_files     = 'TrackingSDK/**/*.{h,m}'
     s.requires_arc     = true
     
-    # 指定 ReachabilitySwift 的版本，确保支持 iOS 10.0
-    s.dependency 'Reachability', '~> 3.2.0'
     s.dependency 'FMDB', '~> 2.7'
 
     s.frameworks = 'AdSupport'

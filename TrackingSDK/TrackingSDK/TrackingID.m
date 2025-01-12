@@ -16,6 +16,7 @@
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <AdSupport/AdSupport.h>
 #import <sys/utsname.h>
+#import "Logger.h"
 
 
 @interface TrackingID ()
@@ -229,6 +230,7 @@ static time_t bootSecTime(void){
     });
     return value;
 }
+
 -(NSString *)getDisk
 {
     static NSString *value = nil;
@@ -300,8 +302,7 @@ static const char *SIDFAModel = "hw.model";
 }
 
 
-
-static const char *SIDFAMachine = "hw.machine";
+//static const char *SIDFAMachine = "hw.machine";
 
 //-(NSString *)getMachine
 //{
@@ -476,8 +477,6 @@ static const char *SIDFAMachine = "hw.machine";
 
 // 从钥匙链读取数据
 - (NSString *)getFromKeychainForKey:(NSString *)key {
-    NSLog(@"getFromKeychainForKey");
-    
     NSMutableDictionary *query = [NSMutableDictionary dictionary];
     query[(__bridge id)kSecClass] = (__bridge id)kSecClassGenericPassword;
     query[(__bridge id)kSecAttrAccount] = key;
@@ -498,7 +497,7 @@ static const char *SIDFAMachine = "hw.machine";
 
 // 存储数据到钥匙链
 - (void)saveToKeychain:(NSString *)data forKey:(NSString *)key {
-    NSLog(@"saveToKeychain");
+    logMessage(@"saveToKeychain");
     
     NSData *dataToStore = [data dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -513,7 +512,7 @@ static const char *SIDFAMachine = "hw.machine";
     // 添加新的钥匙链数据
     OSStatus status = SecItemAdd((__bridge CFDictionaryRef)query, NULL);
     if (status != errSecSuccess) {
-        NSLog(@"Failed to save data to keychain: %d", (int)status);
+        logMessage(@"Failed to save data to keychain: %d", (int)status);
     }
 }
 

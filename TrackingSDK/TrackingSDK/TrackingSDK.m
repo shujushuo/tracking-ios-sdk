@@ -6,28 +6,16 @@
 #import <AdSupport/AdSupport.h>
 #import <UIKit/UIKit.h>
 #import <sys/utsname.h>
-#import "NetworkMonitor.h"
 #import "DataUploader.h"
 #import <Security/Security.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
+#import "Logger.h"
 
 @interface TrackingSDK ()
 
 @property (nonatomic, strong) NSString *appID;
 @property (nonatomic, strong) NSString *serverURL;
 @property (nonatomic, strong) NSString *channelID;
-
-
-@property (nonatomic, strong) NSString *cachedIDFA;
-@property (nonatomic, strong) NSString *cachedIDFV;
-@property (nonatomic, strong) NSString *cachedCAID;
-@property (nonatomic, strong) NSString *cachedInstallID;
-@property (nonatomic, strong) NSString *cachedDeviceModel;
-@property (nonatomic, strong) NSString *cachedSystemVersion;
-@property (nonatomic, strong) NSString *cachedBrand;
-@property (nonatomic, strong) NSString *cachedPkgName;
-@property (nonatomic, strong) NSString *cachedPkgVersion;
-
 @end
 
 @implementation TrackingSDK
@@ -38,9 +26,27 @@
     dispatch_once(&onceToken, ^{
         sharedInstance = [[TrackingSDK alloc] init];
         [EventStorage sharedInstance];
+        
     });
     return sharedInstance;
 }
+
+- (void)setLoggingEnabled:(BOOL)enabled {
+    setLoggingEnabled(enabled); // 启用日志
+}
+
+//- (void)logMessage:(NSString *)format, ... {
+//    // 检查是否启用日志输出
+//    if (!self.loggingEnabled) {
+//        return;
+//    }
+//    va_list args;
+//    va_start(args, format);
+//    NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+//    va_end(args);
+//    logMessage(@"%@", message);
+//}
+
 
 - (void)initialize:(NSString *)appID
          serverURL:(NSString *)url{
@@ -53,11 +59,10 @@
     self.appID = appID;
     self.serverURL = serverURL;
     self.channelID = channelID ?: @"DEFAULT";
-    NSLog(@"初始化 - appID: %@, serverURL: %@, channelID: %@", self.appID, self.serverURL, self.channelID);
+    logMessage(@"初始化 - appID: %@, serverURL: %@, channelID: %@", self.appID, self.serverURL, self.channelID);
     NSDictionary *deviceInfo = [[TrackingID sharedInstance] getDeviceInfo];
-    NSLog(@"deviceInfo: %@", deviceInfo);
+    logMessage(@"deviceInfo: %@", deviceInfo);
     [[DataUploader sharedInstance] setServerURL:serverURL];
-    [[NetworkMonitor sharedInstance] startMonitoring];
 }
 
 - (void)trackInstallEvent{
@@ -95,10 +100,12 @@
              currencyType:(CurrencyType)currencyType
            currencyAmount:(double)currencyAmount
             paymentStatus:(BOOL)paymentStatus {
+    
+    NSString *currencyTypeString = [self stringFromCurrencyType:currencyType];
     NSMutableDictionary *eventDetails = [NSMutableDictionary dictionary];
     eventDetails[@"transactionid"] = transactionID;
     eventDetails[@"paymenttype"] = paymentType;
-    eventDetails[@"currencytype"] = @(currencyType);
+    eventDetails[@"currencytype"] = currencyTypeString;
     eventDetails[@"currencyamount"] = @(currencyAmount);
     eventDetails[@"paymentstatus"] = @(paymentStatus);
     
@@ -110,7 +117,7 @@
               xwho:(NSString *)xwho
           xcontext:(nullable NSDictionary *)additionalContext {
     if (!xwhat) {
-        NSLog(@"事件名称是必需的。");
+        logMessage(@"事件名称是必需的。");
         return;
     }
     
@@ -138,9 +145,9 @@
     
     [[DataUploader sharedInstance] uploadAllStoredEventsWithCompletion:^(BOOL success) {
         if (success) {
-            NSLog(@"事件上传成功！");
+            logMessage(@"事件上传成功！");
         } else {
-            NSLog(@"事件上传失败！");
+            logMessage(@"事件上传失败！");
         }
     }];
     // 保存事件
@@ -151,7 +158,7 @@
     NSMutableDictionary *xcontext = [NSMutableDictionary dictionary];
     
     xcontext[@"brand"] = [TrackingID.sharedInstance getBrand];
-    xcontext[@"model"] = [TrackingID.sharedInstance getDeviceModel];
+    xcontext[@"model"] = [TrackingID.sharedInstance getModel];
     xcontext[@"os"] = @"ios";
     xcontext[@"os_version"] = [TrackingID.sharedInstance getSystemVersion];
     xcontext[@"idfa"] = [TrackingID.sharedInstance getIDFA];
@@ -167,12 +174,54 @@
 
 
 - (NSString *)getChannelID {
-    // 检查 self.channelID 是否为 nil 或空字符串
-    //    if (self.channelID == nil || [self.channelID isEqualToString:@""]) {
-    //        return @"111";  // 如果 channelID 为空，返回默认值
-    //    }
-    NSLog(@"channelID: %@", self.channelID);
-    return self.channelID ?: @"xxxx";  // 如果有值，返回实际的 channelID
+    // 如果有值，返回实际的 channelID
+    return self.channelID ?: @"DEFAULT";
+}
+
+- (NSString *)stringFromCurrencyType:(CurrencyType)currencyType {
+    switch (currencyType) {
+        case CurrencyTypeUSD:
+            return @"USD";
+        case CurrencyTypeEUR:
+            return @"EUR";
+        case CurrencyTypeJPY:
+            return @"JPY";
+        case CurrencyTypeGBP:
+            return @"GBP";
+        case CurrencyTypeAUD:
+            return @"AUD";
+        case CurrencyTypeCAD:
+            return @"CAD";
+        case CurrencyTypeCHF:
+            return @"CHF";
+        case CurrencyTypeCNY:
+            return @"CNY";
+        case CurrencyTypeSEK:
+            return @"SEK";
+        case CurrencyTypeNZD:
+            return @"NZD";
+        case CurrencyTypeMXN:
+            return @"MXN";
+        case CurrencyTypeSGD:
+            return @"SGD";
+        case CurrencyTypeHKD:
+            return @"HKD";
+        case CurrencyTypeNOK:
+            return @"NOK";
+        case CurrencyTypeKRW:
+            return @"KRW";
+        case CurrencyTypeTRY:
+            return @"TRY";
+        case CurrencyTypeRUB:
+            return @"RUB";
+        case CurrencyTypeINR:
+            return @"INR";
+        case CurrencyTypeBRL:
+            return @"BRL";
+        // 在此处添加其他货币类型的处理
+        default:
+            return @"Unknown";
+    }
 }
 
 @end

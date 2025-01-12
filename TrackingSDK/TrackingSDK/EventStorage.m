@@ -3,6 +3,7 @@
 #import "EventStorage.h"
 #import "FMDB/FMDB.h"
 #import <sys/utsname.h>
+#import "Logger.h"
 
 @interface EventStorage ()
 
@@ -42,7 +43,7 @@
         NSString *createTableQuery = @"CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, event TEXT);";
         BOOL success = [db executeUpdate:createTableQuery];
         if (!success) {
-            NSLog(@"Failed to create events table: %@", [db lastErrorMessage]);
+            logMessage(@"Failed to create events table: %@", [db lastErrorMessage]);
         }
     }];
 }
@@ -55,14 +56,14 @@
         eventString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
         
     } else {
-        NSLog(@"Error serializing event: %@", error.localizedDescription);
+        logMessage(@"Error serializing event: %@", error.localizedDescription);
     }
     
     [self.dbQueue inDatabase:^(FMDatabase *db) {
         NSString *insertQuery = @"INSERT INTO events (event) VALUES (?);";
         BOOL success = [db executeUpdate:insertQuery, eventString];
         if (!success) {
-            NSLog(@"Failed to insert event: %@", [db lastErrorMessage]);
+            logMessage(@"Failed to insert event: %@", [db lastErrorMessage]);
         }
     }];
 }
@@ -87,7 +88,7 @@
                     eventDict[@"id"] = eventID;
                     [eventsArray addObject:eventDict];
                 } else {
-                    NSLog(@"Error parsing event JSON: %@", error.localizedDescription);
+                    logMessage(@"Error parsing event JSON: %@", error.localizedDescription);
                 }
             }
         }
@@ -115,9 +116,9 @@
     [self.dbQueue inDatabase:^(FMDatabase *db) {
         BOOL success = [db executeUpdate:deleteQuery];
         if (!success) {
-            NSLog(@"Failed to delete events with ids %@: %@", idsString, [db lastErrorMessage]);
+            logMessage(@"Failed to delete events with ids %@: %@", idsString, [db lastErrorMessage]);
         } else {
-            NSLog(@"Successfully deleted events with ids: %@", idsString);
+            logMessage(@"Successfully deleted events with ids: %@", idsString);
         }
     }];
 }

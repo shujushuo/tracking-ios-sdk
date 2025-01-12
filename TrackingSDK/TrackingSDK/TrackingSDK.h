@@ -5,15 +5,37 @@
 
 @interface TrackingSDK : NSObject
 
+
 typedef NS_ENUM(NSInteger, CurrencyType) {
-    CurrencyTypeUSD,
-    CurrencyTypeEUR,
-    CurrencyTypeCNY,
-    CurrencyTypeJPY,
-    // 你可以根据需要继续添加更多货币类型
+    CurrencyTypeUSD,  // 美元
+    CurrencyTypeEUR,  // 欧元
+    CurrencyTypeJPY,  // 日元
+    CurrencyTypeGBP,  // 英镑
+    CurrencyTypeAUD,  // 澳大利亚元
+    CurrencyTypeCAD,  // 加拿大元
+    CurrencyTypeCHF,  // 瑞士法郎
+    CurrencyTypeCNY,  // 人民币
+    CurrencyTypeSEK,  // 瑞典克朗
+    CurrencyTypeNZD,  // 新西兰元
+    CurrencyTypeMXN,  // 墨西哥比索
+    CurrencyTypeSGD,  // 新加坡元
+    CurrencyTypeHKD,  // 港币
+    CurrencyTypeNOK,  // 挪威克朗
+    CurrencyTypeKRW,  // 韩元
+    CurrencyTypeTRY,  // 土耳其里拉
+    CurrencyTypeRUB,  // 俄罗斯卢布
+    CurrencyTypeINR,  // 印度卢比
+    CurrencyTypeBRL,  // 巴西雷亚尔
+    // 根据需要继续添加更多货币
 };
 
+
+
 + (instancetype _Nonnull )sharedInstance;
+
+- (void)setLoggingEnabled:(BOOL)enabled;
+
+//- (void)logMessage:(NSString *_Nonnull)format, ... NS_FORMAT_FUNCTION(1,2);
 
 // 初始化 SDK，设置 AppID 和服务器 URL
 - (void)initialize:(NSString *_Nonnull)appID

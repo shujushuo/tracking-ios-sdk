@@ -2,6 +2,7 @@
 
 #import "DataUploader.h"
 #import "EventStorage.h"
+#import "Logger.h"
 
 @interface DataUploader()
 
@@ -24,7 +25,7 @@
     NSArray<NSDictionary *> *events = [[EventStorage sharedInstance] retrieveAllEvents];
     
     if (events.count == 0) {
-        NSLog(@"No events to upload.");
+        logMessage(@"No events to upload.");
         if (completion) {
             completion(YES);
         }
@@ -42,7 +43,7 @@
     for (NSDictionary *event in events) {
         NSNumber *eventId = event[@"id"];
         if (!eventId) {
-            NSLog(@"Event does not have an 'id' key: %@", event);
+            logMessage(@"Event does not have an 'id' key: %@", event);
             continue; // 跳过没有 'id' 的事件
         }
         
@@ -78,8 +79,6 @@
 }
 
 - (void)uploadEvent:(NSDictionary *)event completion:(void (^)(BOOL success))completion {
-    NSLog(@"serverUrl: %@", self.serverURL);
-    
     // 去除 URL 字符串的前后空格和换行
     NSString *trimmedServerURL = [self.serverURL stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
@@ -88,14 +87,14 @@
     
     // 检查 URL 是否有效
     if (!url) {
-        NSLog(@"Invalid server URL: %@", trimmedServerURL);
+        logMessage(@"Invalid server URL: %@", trimmedServerURL);
         if (completion) {
             completion(NO);
         }
         return;
     }
     
-    NSLog(@"Making request to: %@", url);
+    logMessage(@"Making request to: %@", url);
     
     // 创建请求
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -107,7 +106,7 @@
     NSData *bodyData = [NSJSONSerialization dataWithJSONObject:event options:0 error:&error];
     
     if (error) {
-        NSLog(@"Error serializing event: %@", error.localizedDescription);
+        logMessage(@"Error serializing event: %@", error.localizedDescription);
         if (completion) {
             completion(NO);
         }
@@ -116,7 +115,7 @@
     
     // 打印 JSON 字符串（可选）
     NSString *jsonString = [[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding];
-    NSLog(@"serializing event: %@", jsonString);
+    logMessage(@"serializing event: %@", jsonString);
     
     // 设置请求体
     request.HTTPBody = bodyData;
@@ -126,7 +125,7 @@
     NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         if (error) {
-            NSLog(@"Error uploading event: %@", error.localizedDescription);
+            logMessage(@"Error uploading event: %@", error.localizedDescription);
             if (completion) {
                 completion(NO);
             }
@@ -134,15 +133,24 @@
             // 检查 HTTP 状态码
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
             if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
+                //真实成功，返回completion(YES)，删除本地缓存
                 NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                NSLog(@"Event uploaded successfully. Server response: %@", responseString);
+                logMessage(@"Server responded: %ld %@", (long)httpResponse.statusCode,responseString);
                 if (completion) {
                     completion(YES);
                 }
-            } else {
-                NSLog(@"Server responded with status code: %ld", (long)httpResponse.statusCode);
+            }else if (httpResponse.statusCode >= 400 && httpResponse.statusCode < 500){
+                // 没有成功，是因为本地数据有问题，返回completion(YES)，是为了能删除本地缓存，以免造成错误数据堆积
                 NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                NSLog(@"Server response: %@", responseString);
+                logMessage(@"Server responded: %ld %@", (long)httpResponse.statusCode,responseString);
+                if (completion) {
+                    completion(YES);
+                }
+            }
+            else {
+                //因为服务器端异常，返回completion(NO)，不会删除缓存
+                NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+                logMessage(@"Server responded: %ld %@", (long)httpResponse.statusCode,responseString);
                 if (completion) {
                     completion(NO);
                 }

@@ -21,9 +21,6 @@
   "source_files": "TrackingSDK/**/*.{h,m}",
   "requires_arc": true,
   "dependencies": {
-    "Reachability": [
-      "~> 3.2.0"
-    ],
     "FMDB": [
       "~> 2.7"
     ]

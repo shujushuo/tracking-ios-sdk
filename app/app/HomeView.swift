@@ -127,7 +127,7 @@ struct HomeView: View {
         UserDefaults.standard.set(serverUrl, forKey: "serverURL")
         UserDefaults.standard.set(appid, forKey: "appid")
         UserDefaults.standard.set(channelid, forKey: "channelID")
-        
+        TrackingSDK.sharedInstance().setLoggingEnabled(true);
         TrackingSDK.sharedInstance().initialize(appid, serverURL: serverUrl, channelID: channelid)
         print("保存配置并初始化SDK")
     }
