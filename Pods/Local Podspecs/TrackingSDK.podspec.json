@@ -6,25 +6,25 @@
   "homepage": "https://github.com/shujushuo/tracking-ios-sdk",
   "license": {
     "type": "Apache License, Version 2.0",
-    "file": "../LICENSE"
+    "file": "LICENSE"
   },
   "authors": {
-    "jiangzhenxing": "jiangzhx@gmail.com"
+    "jiangzhenxing": "3728973@qq.com"
   },
   "source": {
     "git": "https://github.com/shujushuo/tracking-ios-sdk.git",
-    "branch": "main"
+    "tag": "0.2.1"
   },
   "platforms": {
     "ios": "10.0"
   },
   "source_files": "TrackingSDK/**/*.{h,m}",
+  "public_header_files": "TrackingSDK/**/TrackingSDK.h",
   "requires_arc": true,
   "dependencies": {
     "FMDB": [
       "~> 2.7"
     ]
   },
-  "frameworks": "AdSupport",
-  "vendored_frameworks": "TrackingSDK.framework"
+  "frameworks": "AdSupport"
 }
