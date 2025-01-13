@@ -7,13 +7,14 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-# 获取当前 Git tag
-TAG=$(git describe --tags --abbrev=0)
-if [ "$TAG" != "v$VERSION" ]; then
-  echo "Error: Git tag ($TAG) does not match the specified version ($VERSION)."
-  echo "Please create the correct tag first using 'git tag v$VERSION'."
-  exit 1
-fi
+# 创建或强制覆盖 Git tag（如果已有同名 tag，使用 -f 覆盖）
+echo "Creating or overwriting Git tag v$VERSION..."
+git tag -f "v$VERSION"
+
+# 推送到远程仓库
+echo "Pushing changes to remote repository..."
+git push origin master
+git push origin "v$VERSION" --force
 
 # 进入到 SjsTrackingSDK 目录
 cd SjsTrackingSDK
@@ -27,18 +28,9 @@ echo "Committing Podspec file with version $VERSION..."
 git add SjsTrackingSDK.podspec
 git commit -m "Update Podspec for version $VERSION"
 
-# 创建 Git tag
-echo "Creating Git tag v$VERSION..."
-git tag -f "v$VERSION"
-
-# 推送到 Git 和 CocoaPods
-echo "Pushing changes to remote repository..."
-git push origin master
-git push --force origin "v$VERSION"
-
 # 推送 Podspec 到 CocoaPods
-# echo "Pushing Podspec to CocoaPods..."
-# pod trunk push SjsTrackingSDK.podspec --skip-tests
+echo "Pushing Podspec to CocoaPods..."
+pod trunk push SjsTrackingSDK.podspec --skip-tests
 
 # 返回到父目录
 cd ..
