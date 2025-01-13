@@ -7,6 +7,7 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
+
 # 创建或强制覆盖 Git tag（如果已有同名 tag，使用 -f 覆盖）
 echo "Creating or overwriting Git tag v$VERSION..."
 git tag -f "v$VERSION"
@@ -19,9 +20,10 @@ git push origin "v$VERSION" --force
 # 进入到 SjsTrackingSDK 目录
 cd SjsTrackingSDK
 
-# 更新 Podspec 中的版本
+# 更新 Podspec 中的版本和 source 中的 tag
 echo "Updating Podspec with version $VERSION..."
 sed -i "" "s/s.version.*/s.version          = '$VERSION'/" SjsTrackingSDK.podspec
+sed -i "" "s/\"tag\" => \".*\"/\"tag\" => \"v$VERSION\"/" SjsTrackingSDK.podspec
 
 # 提交 Podspec 文件更新
 echo "Committing Podspec file with version $VERSION..."
