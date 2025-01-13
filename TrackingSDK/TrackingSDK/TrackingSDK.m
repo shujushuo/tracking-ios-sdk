@@ -3,13 +3,15 @@
 #import "TrackingSDK.h"
 #import "TrackingID.h"
 #import "EventStorage.h"
+#import "DataUploader.h"
+#import "Logger.h"
+#import "LifecycleObserver.h"
+
 #import <AdSupport/AdSupport.h>
 #import <UIKit/UIKit.h>
 #import <sys/utsname.h>
-#import "DataUploader.h"
 #import <Security/Security.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
-#import "Logger.h"
 
 @interface TrackingSDK ()
 
@@ -26,7 +28,8 @@
     dispatch_once(&onceToken, ^{
         sharedInstance = [[TrackingSDK alloc] init];
         [EventStorage sharedInstance];
-        
+        [[LifecycleObserver sharedObserver] startObserving];
+
     });
     return sharedInstance;
 }
@@ -34,19 +37,6 @@
 - (void)setLoggingEnabled:(BOOL)enabled {
     setLoggingEnabled(enabled); // 启用日志
 }
-
-//- (void)logMessage:(NSString *)format, ... {
-//    // 检查是否启用日志输出
-//    if (!self.loggingEnabled) {
-//        return;
-//    }
-//    va_list args;
-//    va_start(args, format);
-//    NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
-//    va_end(args);
-//    logMessage(@"%@", message);
-//}
-
 
 - (void)initialize:(NSString *)appID
          serverURL:(NSString *)url{
@@ -63,6 +53,23 @@
     NSDictionary *deviceInfo = [[TrackingID sharedInstance] getDeviceInfo];
     logMessage(@"deviceInfo: %@", deviceInfo);
     [[DataUploader sharedInstance] setServerURL:serverURL];
+
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    // 检查是否已经跟踪过安装事件
+    if (![defaults boolForKey:@"hasTrackedInstallEvent"]) {
+        [self trackInstallEvent];
+        [defaults setBool:YES forKey:@"hasTrackedInstallEvent"];
+        [defaults synchronize];
+        logMessage(@"第一次安装后启动，上报install");
+    }else{
+        logMessage(@"已经不是第一次安装后启动，不上报isntall");
+    }
+    [self trackStartupEvent];
+}
+
+- (void)unset:(NSString *)appID
+         serverURL:(NSString *)url{
+    [[LifecycleObserver sharedObserver] stopObserving];
 }
 
 - (void)trackInstallEvent{
@@ -173,6 +180,8 @@
 }
 
 
+
+
 - (NSString *)getChannelID {
     // 如果有值，返回实际的 channelID
     return self.channelID ?: @"DEFAULT";
@@ -218,7 +227,7 @@
             return @"INR";
         case CurrencyTypeBRL:
             return @"BRL";
-        // 在此处添加其他货币类型的处理
+            // 在此处添加其他货币类型的处理
         default:
             return @"Unknown";
     }

@@ -33,9 +33,6 @@ struct appApp: App {
                     // 可以访问广告标识符 (IDFA)
                     let idfa = ASIdentifierManager.shared().advertisingIdentifier
                     print("IDFA: \(idfa)")
-                    
-                    // 在获得授权后初始化 SDK
-                    
                 case .denied:
                     print("用户拒绝了应用跟踪")
                 case .restricted:
@@ -47,9 +44,11 @@ struct appApp: App {
                 }
             }
             // 标准情况，应该在这里初始化SDK，我当期是示例，所以放到了按钮里面去初始化
-            // TrackingSDK.sharedInstance().initialize(withAppID: "https://127.0.0.1/up", serverURL: "APPID")
-
+            TrackingSDK.sharedInstance().setLoggingEnabled(true);
+            TrackingSDK.sharedInstance().initialize("APPID", serverURL: "http://192.168.1.102:8090/up")
         } else {
+            TrackingSDK.sharedInstance().setLoggingEnabled(true);
+            TrackingSDK.sharedInstance().initialize("APPID", serverURL: "http://192.168.1.102:8090/up")
             print("iOS 14 或更高版本才能使用 AppTrackingTransparency")
         }
     }

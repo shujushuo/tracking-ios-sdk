@@ -38,7 +38,7 @@
     NSMutableArray<NSNumber *> *successfullyUploadedEventIds = [NSMutableArray array];
     
     // 创建一个串行队列来确保线程安全地修改数组
-    dispatch_queue_t serialQueue = dispatch_queue_create("com.example.uploadQueue", DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_t serialQueue = dispatch_queue_create("com.shujushuo.tracking.uploadQueue", DISPATCH_QUEUE_SERIAL);
     
     for (NSDictionary *event in events) {
         NSNumber *eventId = event[@"id"];
@@ -77,89 +77,60 @@
         }
     });
 }
-
 - (void)uploadEvent:(NSDictionary *)event completion:(void (^)(BOOL success))completion {
     // 去除 URL 字符串的前后空格和换行
     NSString *trimmedServerURL = [self.serverURL stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    
-    // 创建 NSURL 对象
     NSURL *url = [NSURL URLWithString:trimmedServerURL];
     
     // 检查 URL 是否有效
     if (!url) {
         logMessage(@"Invalid server URL: %@", trimmedServerURL);
-        if (completion) {
-            completion(NO);
-        }
+        if (completion) completion(NO);
         return;
     }
     
     logMessage(@"Making request to: %@", url);
     
-    // 创建请求
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    request.HTTPMethod = @"POST";
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    
     // 序列化事件字典为 JSON 数据
-    NSError *error;
-    NSData *bodyData = [NSJSONSerialization dataWithJSONObject:event options:0 error:&error];
-    
-    if (error) {
-        logMessage(@"Error serializing event: %@", error.localizedDescription);
-        if (completion) {
-            completion(NO);
-        }
+    NSError *serializationError = nil;
+    NSData *bodyData = [NSJSONSerialization dataWithJSONObject:event options:0 error:&serializationError];
+    if (serializationError) {
+        logMessage(@"Error serializing event: %@", serializationError.localizedDescription);
+        if (completion) completion(NO);
         return;
     }
     
     // 打印 JSON 字符串（可选）
     NSString *jsonString = [[NSString alloc] initWithData:bodyData encoding:NSUTF8StringEncoding];
-    logMessage(@"serializing event: %@", jsonString);
+    logMessage(@"Serializing event: %@", jsonString);
     
-    // 设置请求体
+    // 创建请求并设置 HTTP 方法及头
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"POST";
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     request.HTTPBody = bodyData;
     
     // 创建数据任务
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
-                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if (error) {
-            logMessage(@"Error uploading event: %@", error.localizedDescription);
-            if (completion) {
-                completion(NO);
-            }
+    NSURLSessionDataTask *dataTask = [[NSURLSession sharedSession] dataTaskWithRequest:request
+                                                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *taskError) {
+        if (taskError) {
+            logMessage(@"Error uploading event: %@", taskError.localizedDescription);
+            if (completion) completion(NO);
         } else {
-            // 检查 HTTP 状态码
             NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
-            if (httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) {
-                //真实成功，返回completion(YES)，删除本地缓存
-                NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                logMessage(@"Server responded: %ld %@", (long)httpResponse.statusCode,responseString);
-                if (completion) {
-                    completion(YES);
-                }
-            }else if (httpResponse.statusCode >= 400 && httpResponse.statusCode < 500){
-                // 没有成功，是因为本地数据有问题，返回completion(YES)，是为了能删除本地缓存，以免造成错误数据堆积
-                NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                logMessage(@"Server responded: %ld %@", (long)httpResponse.statusCode,responseString);
-                if (completion) {
-                    completion(YES);
-                }
-            }
-            else {
-                //因为服务器端异常，返回completion(NO)，不会删除缓存
-                NSString *responseString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-                logMessage(@"Server responded: %ld %@", (long)httpResponse.statusCode,responseString);
-                if (completion) {
-                    completion(NO);
-                }
-            }
+            NSString *responseString = (data && data.length > 0) ? [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] : @"";
+            logMessage(@"Server responded: %ld %@", (long)httpResponse.statusCode, responseString);
+            
+            // 状态码在 200-299 或 400-499 范围内视为成功
+            BOOL success = ((httpResponse.statusCode >= 200 && httpResponse.statusCode < 300) ||
+                            (httpResponse.statusCode >= 400 && httpResponse.statusCode < 500));
+            if (completion) completion(success);
         }
     }];
     
     // 启动任务
     [dataTask resume];
 }
+
 
 @end

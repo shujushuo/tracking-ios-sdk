@@ -48,7 +48,7 @@
 // 获取包版本
 - (NSString *_Nonnull)getPkgVersion;
 
-
+- (NSString *_Nullable)getFromKeychainForKey:(NSString *_Nonnull)key ;
 
 @end
 

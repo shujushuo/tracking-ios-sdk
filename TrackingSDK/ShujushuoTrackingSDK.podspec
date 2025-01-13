@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name             = 'ShujushuoTrackingSDK'
+  s.name             = 'TrackingSDK'
   s.version          = '0.2.3'
   s.summary          = 'A tracking SDK for iOS applications.'
   
