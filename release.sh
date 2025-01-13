@@ -14,7 +14,7 @@ git tag -f "v$VERSION"
 
 # 推送到远程仓库
 echo "Pushing changes to remote repository..."
-git push origin master
+git push origin main
 git push origin "v$VERSION" --force
 
 # 进入到 SjsTrackingSDK 目录
@@ -23,7 +23,7 @@ cd SjsTrackingSDK
 # 更新 Podspec 中的版本和 source 中的 tag
 echo "Updating Podspec with version $VERSION..."
 sed -i "" "s/s.version.*/s.version          = '$VERSION'/" SjsTrackingSDK.podspec
-sed -i "" "s/\"tag\" => \".*\"/\"tag\" => \"v$VERSION\"/" SjsTrackingSDK.podspec
+sed -i '' "s/tag => \'.*\'/tag => \'v$VERSION'/" SjsTrackingSDK.podspec
 
 # 提交 Podspec 文件更新
 echo "Committing Podspec file with version $VERSION..."
