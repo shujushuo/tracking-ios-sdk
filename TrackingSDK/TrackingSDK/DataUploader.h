@@ -6,7 +6,7 @@
 
 + (instancetype)sharedInstance;
 
-- (void)setServerURL:(NSString *)url;
+- (void)setBaseURL:(NSString *)url;
 - (void)uploadAllStoredEventsWithCompletion:(void (^)(BOOL success))completion;
 
 @end

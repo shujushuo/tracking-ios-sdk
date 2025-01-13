@@ -6,7 +6,7 @@
 
 @interface DataUploader()
 
-@property (nonatomic, strong) NSString *serverURL;
+@property (nonatomic, strong) NSString *baseURL;
 
 @end
 
@@ -79,8 +79,15 @@
 }
 - (void)uploadEvent:(NSDictionary *)event completion:(void (^)(BOOL success))completion {
     // 去除 URL 字符串的前后空格和换行
-    NSString *trimmedServerURL = [self.serverURL stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSURL *url = [NSURL URLWithString:trimmedServerURL];
+    NSString *trimmedServerURL = [self.baseURL stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString *finalURLString;
+    if ([trimmedServerURL hasSuffix:@"/"]) {
+        finalURLString = [trimmedServerURL stringByAppendingString:@"up"];
+    } else {
+        finalURLString = [trimmedServerURL stringByAppendingString:@"/up"];
+    }
+
+    NSURL *url = [NSURL URLWithString:finalURLString];
     
     // 检查 URL 是否有效
     if (!url) {
@@ -88,6 +95,8 @@
         if (completion) completion(NO);
         return;
     }
+
+    
     
     logMessage(@"Making request to: %@", url);
     

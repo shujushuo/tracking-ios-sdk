@@ -45,10 +45,10 @@ struct appApp: App {
             }
             // 标准情况，应该在这里初始化SDK，我当期是示例，所以放到了按钮里面去初始化
             TrackingSDK.sharedInstance().setLoggingEnabled(true);
-            TrackingSDK.sharedInstance().initialize("APPID", serverURL: "http://192.168.1.102:8090/up")
+            TrackingSDK.sharedInstance().initialize("APPID", serverURL: "http://192.168.1.102:8090")
         } else {
             TrackingSDK.sharedInstance().setLoggingEnabled(true);
-            TrackingSDK.sharedInstance().initialize("APPID", serverURL: "http://192.168.1.102:8090/up")
+            TrackingSDK.sharedInstance().initialize("APPID", serverURL: "http://192.168.1.102:8090")
             print("iOS 14 或更高版本才能使用 AppTrackingTransparency")
         }
     }

@@ -52,7 +52,7 @@
     logMessage(@"初始化 - appID: %@, serverURL: %@, channelID: %@", self.appID, self.serverURL, self.channelID);
     NSDictionary *deviceInfo = [[TrackingID sharedInstance] getDeviceInfo];
     logMessage(@"deviceInfo: %@", deviceInfo);
-    [[DataUploader sharedInstance] setServerURL:serverURL];
+    [[DataUploader sharedInstance] setBaseURL:serverURL];
 
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     // 检查是否已经跟踪过安装事件
