@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
   s.homepage         = 'https://github.com/shujushuo/tracking-ios-sdk'
   s.license          = "Apache License, Version 2.0"
   s.author           = { "jiangzhenxing" => "3728973@qq.com" }
-  s.source           = { :git => 'https://github.com/shujushuo/tracking-ios-sdk.git', :tag => 'v0.2.3' }
+  s.source           = { :git => 'https://github.com/shujushuo/tracking-ios-sdk.git', :tag => 'v0.2.4' }
   s.platform         = :ios, '10.0'
   
   # 确保路径正确
