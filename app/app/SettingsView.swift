@@ -2,7 +2,7 @@ import SwiftUI
 import AdSupport
 import AppTrackingTransparency
 import UIKit
-import TrackingSDK
+import SjsTrackingSDK
 
 struct SettingsView: View {
     @State private var showAlert: Bool = false

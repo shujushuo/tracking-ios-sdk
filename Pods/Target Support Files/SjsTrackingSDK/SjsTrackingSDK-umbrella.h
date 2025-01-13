@@ -18,6 +18,6 @@
 #import "TrackingID.h"
 #import "TrackingSDK.h"
 
-FOUNDATION_EXPORT double TrackingSDKVersionNumber;
-FOUNDATION_EXPORT const unsigned char TrackingSDKVersionString[];
+FOUNDATION_EXPORT double SjsTrackingSDKVersionNumber;
+FOUNDATION_EXPORT const unsigned char SjsTrackingSDKVersionString[];
 

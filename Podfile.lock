@@ -4,24 +4,24 @@ PODS:
   - FMDB/Core (2.7.12)
   - FMDB/standard (2.7.12):
     - FMDB/Core
-  - TrackingSDK (0.2.3):
+  - SjsTrackingSDK (0.2.3):
     - FMDB (~> 2.7)
 
 DEPENDENCIES:
-  - TrackingSDK (from `./TrackingSDK`)
+  - SjsTrackingSDK (from `./SjsTrackingSDK`)
 
 SPEC REPOS:
   trunk:
     - FMDB
 
 EXTERNAL SOURCES:
-  TrackingSDK:
-    :path: "./TrackingSDK"
+  SjsTrackingSDK:
+    :path: "./SjsTrackingSDK"
 
 SPEC CHECKSUMS:
   FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
-  TrackingSDK: 2042c9540fb64e9f9a8321756e97e26c4dd4f987
+  SjsTrackingSDK: 78edadb003c248a2626af864baae64890a106568
 
-PODFILE CHECKSUM: a334313cbde7f52700d5c1a94393c782e58ef6e2
+PODFILE CHECKSUM: d937acd1beaa6835092539ebf14f7729d340b7a4
 
 COCOAPODS: 1.16.2

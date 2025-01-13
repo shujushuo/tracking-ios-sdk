@@ -1,5 +1,5 @@
 import SwiftUI
-import TrackingSDK
+import SjsTrackingSDK
 import AdSupport
 import AppTrackingTransparency
 

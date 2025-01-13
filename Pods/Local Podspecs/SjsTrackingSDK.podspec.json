@@ -1,5 +1,5 @@
 {
-  "name": "TrackingSDK",
+  "name": "SjsTrackingSDK",
   "version": "0.2.3",
   "summary": "A tracking SDK for iOS applications.",
   "description": "TrackingSDK is a framework that provides event tracking capabilities for iOS applications.",

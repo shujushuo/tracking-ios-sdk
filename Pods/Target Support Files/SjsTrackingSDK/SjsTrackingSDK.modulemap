@@ -1,0 +1,6 @@
+framework module SjsTrackingSDK {
+  umbrella header "SjsTrackingSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}

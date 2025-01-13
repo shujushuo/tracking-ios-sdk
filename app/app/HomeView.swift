@@ -1,5 +1,5 @@
 import SwiftUI
-import TrackingSDK
+import SjsTrackingSDK
 
 struct HomeView: View {
     @State private var serverUrl: String = "http://127.0.0.1:8090/"
