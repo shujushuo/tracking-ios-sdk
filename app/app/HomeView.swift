@@ -2,8 +2,8 @@ import SwiftUI
 import SjsTrackingSDK
 
 struct HomeView: View {
-    @State private var serverUrl: String = "http://192.168.1.102:8090/"
-    @State private var appid: String = "APPID"
+    @State private var serverUrl: String = "http://127.0.0.1:8090/"
+    @State private var appid: String = "200_1001"
     @State private var channelid: String = "DEFAULT"
     
     var body: some View {

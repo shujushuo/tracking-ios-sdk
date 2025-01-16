@@ -5,8 +5,21 @@ import AppTrackingTransparency
 
 @main
 struct appApp: App {
+    @Environment(\.colorScheme) var colorScheme // 使用环境变量来控制色彩方案
+    
     init() {
-        // 应用启动时无需立即请求权限
+        // 初始时强制设置白天模式
+        if #available(iOS 15.0, *) {
+            // 获取当前窗口场景并设置为浅色模式
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                for window in windowScene.windows {
+                    window.overrideUserInterfaceStyle = .light
+                }
+            }
+        } else {
+            // iOS 15 以下的版本直接使用 windows
+            UIApplication.shared.windows.first?.overrideUserInterfaceStyle = .light
+        }
     }
     
     var body: some Scene {
@@ -18,7 +31,7 @@ struct appApp: App {
                         // 延迟请求授权
                         requestTrackingPermission()
                     }
-                }
+                }.preferredColorScheme(.light)
         }
     }
     
@@ -48,7 +61,7 @@ struct appApp: App {
         }
         
         TrackingSDK.sharedInstance().setLoggingEnabled(true);
-        TrackingSDK.sharedInstance().preInitialize("APPID", serverURL: "http://192.168.1.102:8090")
-
+        TrackingSDK.sharedInstance().preInitialize("200_1001", serverURL: "http://127.0.0.1:8090/")
+        
     }
 }
