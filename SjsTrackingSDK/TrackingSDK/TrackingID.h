@@ -19,7 +19,9 @@
 - (NSString *_Nonnull)getDeviceModel;
 
 // 获取IDFV
-- (NSString *_Nonnull)getTrackingID;
+- (NSString *_Nonnull)getCAID;
+
+- (void)setCAID:(NSString *_Nonnull)caid;
 
 
 // 获取设备型号

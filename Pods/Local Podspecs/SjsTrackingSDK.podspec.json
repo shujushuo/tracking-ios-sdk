@@ -1,6 +1,6 @@
 {
   "name": "SjsTrackingSDK",
-  "version": "0.2.3",
+  "version": "0.2.6",
   "summary": "A tracking SDK for iOS applications.",
   "description": "TrackingSDK is a framework that provides event tracking capabilities for iOS applications.",
   "homepage": "https://github.com/shujushuo/tracking-ios-sdk",
@@ -10,7 +10,7 @@
   },
   "source": {
     "git": "https://github.com/shujushuo/tracking-ios-sdk.git",
-    "tag": "v0.2.3"
+    "tag": "v0.2.6"
   },
   "platforms": {
     "ios": "10.0"
@@ -21,6 +21,9 @@
   "dependencies": {
     "FMDB": [
       "~> 2.7"
+    ],
+    "Reachability": [
+      "~> 3.2"
     ]
   },
   "frameworks": "AdSupport"

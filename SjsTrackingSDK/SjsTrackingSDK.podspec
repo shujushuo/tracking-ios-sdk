@@ -20,6 +20,7 @@ Pod::Spec.new do |s|
   # 依赖项
   s.requires_arc     = true
   s.dependency 'FMDB', '~> 2.7'
+  s.dependency 'Reachability', '~> 3.2'
   
   # 系统框架
   s.frameworks = 'AdSupport'

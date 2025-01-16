@@ -10,6 +10,7 @@
 #endif
 #endif
 
+#import "CryptoHelper.h"
 #import "DataUploader.h"
 #import "EventStorage.h"
 #import "LifecycleObserver.h"

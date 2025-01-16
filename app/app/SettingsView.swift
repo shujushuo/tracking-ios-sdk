@@ -16,7 +16,7 @@ struct SettingsView: View {
             ("设备型号", TrackingID.sharedInstance().getModel()), // 获取设备型号
             ("系统版本", TrackingID.sharedInstance().getSystemVersion()), // 系统版本，例如 iOS 16.4
             ("IDFA", TrackingID.sharedInstance().getIDFA()), // 获取IDFA
-            ("CAID", TrackingID.sharedInstance().getTrackingID()), // 获取CAID
+            ("CAID", TrackingID.sharedInstance().getCAID()), // 获取CAID
             ("IDFV", TrackingID.sharedInstance().getIDFV()), // 获取IDFV
             ("Install ID", TrackingID.sharedInstance().getInstallID()), // 用UUID生成的Install ID
             ("包名", TrackingID.sharedInstance().getPkgName()), // 系统版本，例如
@@ -26,10 +26,11 @@ struct SettingsView: View {
     
     // 在视图初始化时加载设备信息
     init() {
-        // 初始化时计算设备信息
+        // 初始化时加载设备信息
         _features = State(initialValue: getDeviceInfo())
     }
     
+
     var body: some View {
         ScrollView { // 用ScrollView包装整个内容，防止溢出
             VStack {
@@ -104,6 +105,10 @@ struct SettingsView: View {
             }
             .padding() // 外部内容的 padding
         }
+        .onAppear {
+              // 视图显示时刷新设备信息
+              features = getDeviceInfo()
+          }
     }
 }
 

@@ -38,11 +38,13 @@ typedef NS_ENUM(NSInteger, CurrencyType) {
 //- (void)logMessage:(NSString *_Nonnull)format, ... NS_FORMAT_FUNCTION(1,2);
 
 // 初始化 SDK，设置 AppID 和服务器 URL
-- (void)initialize:(NSString *_Nonnull)appID
+- (void)preInitialize:(NSString *_Nonnull)appID
          serverURL:(NSString *_Nonnull)url;
-- (void)initialize:(NSString *_Nonnull)appID
+- (void)preInitialize:(NSString *_Nonnull)appID
          serverURL:(NSString *_Nonnull)url
          channelID:(NSString *_Nonnull)channelID;
+
+- (void)initialize;
 
 - (void)trackInstallEvent;
 

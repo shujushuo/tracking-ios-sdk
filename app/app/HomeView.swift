@@ -2,7 +2,7 @@ import SwiftUI
 import SjsTrackingSDK
 
 struct HomeView: View {
-    @State private var serverUrl: String = "http://127.0.0.1:8090/"
+    @State private var serverUrl: String = "http://192.168.1.102:8090/"
     @State private var appid: String = "APPID"
     @State private var channelid: String = "DEFAULT"
     
@@ -124,12 +124,12 @@ struct HomeView: View {
     
     // 保存配置并初始化SDK
     private func saveAndInitializeSDK() {
-        UserDefaults.standard.set(serverUrl, forKey: "serverURL")
-        UserDefaults.standard.set(appid, forKey: "appid")
-        UserDefaults.standard.set(channelid, forKey: "channelID")
-        TrackingSDK.sharedInstance().setLoggingEnabled(true);
-        TrackingSDK.sharedInstance().initialize(appid, serverURL: serverUrl, channelID: channelid)
-        print("保存配置并初始化SDK")
+            UserDefaults.standard.set(serverUrl, forKey: "serverURL")
+            UserDefaults.standard.set(appid, forKey: "appid")
+            UserDefaults.standard.set(channelid, forKey: "channelID")
+            TrackingSDK.sharedInstance().setLoggingEnabled(true);
+            TrackingSDK.sharedInstance().initialize()
+            print("保存配置并初始化SDK")
     }
     
     // 加载保存的配置

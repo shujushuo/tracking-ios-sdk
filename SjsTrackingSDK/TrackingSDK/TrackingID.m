@@ -7,7 +7,9 @@
 #import "TrackingID.h"
 #import <sys/sysctl.h>
 #import <sys/time.h>
+#import "DataUploader.h"
 #import "MD5Util.h"
+#import "CryptoHelper.h"
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <CoreTelephony/CTCarrier.h>
 #import <sys/mount.h>
@@ -26,6 +28,7 @@
 
 @implementation TrackingID
 NSString *unknwo_idfa = @"00000000-0000-0000-0000-000000000000";
+static NSString *_caid = nil;
 
 + (instancetype)sharedInstance {
     static TrackingID *sharedInstance = nil;
@@ -36,22 +39,26 @@ NSString *unknwo_idfa = @"00000000-0000-0000-0000-000000000000";
     return sharedInstance;
 }
 - (NSDictionary *)getDeviceInfo {
+    
     NSDictionary *deviceInfo = @{
         @"bootTimeInSec":[self getBootTimeInSec],
         @"countryCode":[self getCountryCode],
         @"language":[self getLanguage],
         @"deviceName":[self getDeviceName],
         @"systemVersion":[self getSystemVersion],
-        @"machine":[self getModel],
+        @"machine":[self getMachine],
         @"carrierInfo":[self getCarrierInfo],
         @"memory":[self getMemory],
         @"disk":[self getDisk],
         @"sysFileTime":[self getSysFileTime],
         @"model":[self getDeviceModel],
         @"timeZone":[self getTimeZone],
+        @"deviceInitTime":@"1727760882",//[self getFileInitTime],
         @"mntId":[self getMntId],
-        @"deviceInitTime":[self getFileInitTime],
     };
+    
+    
+    
     return deviceInfo;
 }
 #pragma mark - 获取硬件信息
@@ -65,7 +72,7 @@ static time_t bootSecTime(void){
         return 0;
     }
     return boottime.tv_sec;
-
+    
 }
 
 - (NSString *)getBootTimeInSec {
@@ -107,31 +114,15 @@ static time_t bootSecTime(void){
     static NSString *value = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSString *rawName = nil;
-        // 判断系统版本，iOS 16及以上使用通用名称，否则使用用户自定义名称
-        if (@available(iOS 16.0, *)) {
-            UIUserInterfaceIdiom idiom = [UIDevice currentDevice].userInterfaceIdiom;
-            if (idiom == UIUserInterfaceIdiomPhone) {
-                rawName = @"iPhone";
-            } else if (idiom == UIUserInterfaceIdiomPad) {
-                rawName = @"iPad";
-            } else {
-                // 其他类型，如 iPod touch、AppleTV，按需处理
-                rawName = [[UIDevice currentDevice] model];
-                // 或者直接写成 @"iPod" / @"AppleTV" / ...
-            }
-        } else {
-            // iOS 15 及以下：获取用户自定义的设备名，如 “xx 的 iPhone”
-            rawName = [[UIDevice currentDevice] name];
-        }
         
-        if (!rawName || rawName.length == 0) {
+        
+        if ([[[UIDevice currentDevice] name] length] == 0) {
             value = nil;
         }
-        
-        // 小写 MD5
-        NSString *lowercaseName = [rawName lowercaseString];
-        value = [CAIDMD5Util md5HexDigest:lowercaseName];
+        NSString *name =[[UIDevice currentDevice] name];
+        logMessage(@"rawName: %@",name);
+        //        NSString *lowercaseName = [rawName lowercaseString];
+        value = [CAIDMD5Util md5HexDigest:name];
         
     });
     return value;
@@ -255,6 +246,7 @@ static time_t bootSecTime(void){
     static NSString *value = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        //L3Zhci9tb2JpbGUvTGlicmFyeS9Vc2VyQ29uZmlndXJhdGlvblByb2ZpbGVzL1B1YmxpY0luZm8vTUNNZXRhLnBsaXN0
         NSString *information = @"L3Zhci9tb2JpbGUvTGlicmFyeS9Vc2VyQ29uZmlndXJhdGlvblByb2ZpbGVzL1B1YmxpY0luZm8vTUNNZXRhLnBsaXN0";
         NSData *data=[[NSData alloc]initWithBase64EncodedString:information
                                                         options:0];
@@ -270,22 +262,19 @@ static time_t bootSecTime(void){
                 value = [NSString stringWithFormat:@"%f",[dataDate timeIntervalSince1970]];
             }
         }
-
+        
     });
     return value;}
 
 
 static NSString *getSystemHardwareByName(const char *typeSpecifier) {
     static NSString *value = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        size_t size;
-        sysctlbyname(typeSpecifier, NULL, &size, NULL, 0);
-        char *answer = malloc(size);
-        sysctlbyname(typeSpecifier, answer, &size, NULL, 0);
-        value = [NSString stringWithUTF8String:answer];
-        free(answer);
-    });
+    size_t size;
+    sysctlbyname(typeSpecifier, NULL, &size, NULL, 0);
+    char *answer = malloc(size);
+    sysctlbyname(typeSpecifier, answer, &size, NULL, 0);
+    value = [NSString stringWithUTF8String:answer];
+    free(answer);
     return value;
 }
 
@@ -302,18 +291,18 @@ static const char *SIDFAModel = "hw.model";
 }
 
 
-//static const char *SIDFAMachine = "hw.machine";
+static const char *SIDFAMachine = "hw.machine";
 
-//-(NSString *)getMachine
-//{
-//    static NSString *value = nil;
-//    static dispatch_once_t onceToken;
-//    dispatch_once(&onceToken, ^{
-//        NSString *machine = getSystemHardwareByName(SIDFAMachine);
-//        value = machine == nil ? @"" : machine;
-//    });
-//    return value;
-//}
+-(NSString *)getMachine
+{
+    static NSString *value = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString *machine = getSystemHardwareByName(SIDFAMachine);
+        value = machine == nil ? @"" : machine;
+    });
+    return value;
+}
 
 - (NSString *) getTimeZone
 {
@@ -370,17 +359,30 @@ static const char *SIDFAModel = "hw.model";
 }
 
 
-// 获取唯一ID
-- (NSString *)getTrackingID {
-    static NSString *value = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        value = unknwo_idfa;
-    });
-    return value;
-}
+
+#pragma mark - 获取硬件信息
+
 
 #pragma mark - 获取设备基础信息
+
+
+// 获取 CAID
+- (NSString *)getCAID {
+    return _caid;  // 返回已经设置的值
+}
+
+// 获取 CAID
+
+- (void)setCAID:(NSString * _Nonnull)caid {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _caid = [caid copy];  // 保证只设置一次
+    });
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:caid forKey:@"CAID"];
+    [defaults synchronize];
+    
+}
 
 // 获取设备型号
 - (NSString *)getModel {
@@ -395,23 +397,28 @@ static const char *SIDFAModel = "hw.model";
     return value;
 }
 
+
 // 获取IDFA
 - (NSString *)getIDFA {
     static NSString *value = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        value = unknwo_idfa;
+    if (!value) {
+        // 如果还没有缓存的 IDFA，则尝试获取
+        // 在第一次调用时，检查权限并尝试获取 IDFA
         if (@available(iOS 14, *)) {
             ATTrackingManagerAuthorizationStatus status = ATTrackingManager.trackingAuthorizationStatus;
             if (status == ATTrackingManagerAuthorizationStatusAuthorized) {
-                // 如果授权，获取IDFA
+                // 如果授权，获取 IDFA
                 value = [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString];
+                logMessage(@"IDFA: %@", value);  // 打印 IDFA
+            } else {
+                logMessage(@"IDFA权限未授权");
             }
         } else {
-            // 早期iOS版本，不支持AppTrackingTransparency
+            // 对于早期版本的 iOS，直接获取 IDFA
             value = [[ASIdentifierManager sharedManager].advertisingIdentifier UUIDString];
+            logMessage(@"IDFA: %@", value);  // 打印 IDFA
         }
-    });
+    }
     return value;
 }
 
@@ -440,7 +447,7 @@ static const char *SIDFAModel = "hw.model";
             NSString *deviceID = [self getIDFA];
             if (deviceID.length == 0 || [deviceID  isEqual: unknwo_idfa]) {
                 // 如果 IDFA 为空，则使用 CAID
-                deviceID = [self getTrackingID];
+                deviceID = [self getCAID];
                 if (deviceID.length == 0 || [deviceID isEqual: @"unknown"]) {
                     // 如果 CAID 为空，则使用 IDFV
                     deviceID = [self getIDFV];
@@ -473,6 +480,8 @@ static const char *SIDFAModel = "hw.model";
     });
     return value;
 }
+#pragma mark - 获取设备基础信息
+
 
 #pragma mark - 钥匙串读写
 

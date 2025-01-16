@@ -4,8 +4,10 @@ PODS:
   - FMDB/Core (2.7.12)
   - FMDB/standard (2.7.12):
     - FMDB/Core
-  - SjsTrackingSDK (0.2.3):
+  - Reachability (3.7.6)
+  - SjsTrackingSDK (0.2.6):
     - FMDB (~> 2.7)
+    - Reachability (~> 3.2)
 
 DEPENDENCIES:
   - SjsTrackingSDK (from `./SjsTrackingSDK`)
@@ -13,6 +15,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - FMDB
+    - Reachability
 
 EXTERNAL SOURCES:
   SjsTrackingSDK:
@@ -20,7 +23,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
-  SjsTrackingSDK: 78edadb003c248a2626af864baae64890a106568
+  Reachability: fd0ecd23705e2599e4cceeb943222ae02296cbc6
+  SjsTrackingSDK: b235764dcbc3d84dd7899d995a7782450ff5f802
 
 PODFILE CHECKSUM: d937acd1beaa6835092539ebf14f7729d340b7a4
 

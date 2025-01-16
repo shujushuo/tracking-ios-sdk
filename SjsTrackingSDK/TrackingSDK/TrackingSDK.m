@@ -12,7 +12,7 @@
 #import <sys/utsname.h>
 #import <Security/Security.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
-
+#import "Reachability.h"
 @interface TrackingSDK ()
 
 @property (nonatomic, strong) NSString *appID;
@@ -21,6 +21,8 @@
 @end
 
 @implementation TrackingSDK
+NSString *key = @"+y*j^2Sph7Hw=B56";  // AES 密钥
+NSString *iv = @"wd&shujushuo.com";  // AES 密钥
 
 + (instancetype)sharedInstance {
     static TrackingSDK *sharedInstance = nil;
@@ -29,7 +31,7 @@
         sharedInstance = [[TrackingSDK alloc] init];
         [EventStorage sharedInstance];
         [[LifecycleObserver sharedObserver] startObserving];
-
+        
     });
     return sharedInstance;
 }
@@ -38,37 +40,115 @@
     setLoggingEnabled(enabled); // 启用日志
 }
 
-- (void)initialize:(NSString *)appID
+- (void)preInitialize:(NSString *)appID
          serverURL:(NSString *)url{
-    [self initialize:appID serverURL:url channelID:@"DEFAULT"];
+    [self preInitialize:appID serverURL:url channelID:@"DEFAULT"];
 }
 
-- (void)initialize:(NSString *)appID
+- (void)preInitialize:(NSString *)appID
          serverURL:(NSString *)serverURL
          channelID:(NSString *)channelID{
     self.appID = appID;
     self.serverURL = serverURL;
     self.channelID = channelID ?: @"DEFAULT";
-    logMessage(@"初始化 - appID: %@, serverURL: %@, channelID: %@", self.appID, self.serverURL, self.channelID);
-    NSDictionary *deviceInfo = [[TrackingID sharedInstance] getDeviceInfo];
-    logMessage(@"deviceInfo: %@", deviceInfo);
     [[DataUploader sharedInstance] setBaseURL:serverURL];
+    [[DataUploader sharedInstance] setKey:key];
+    [[DataUploader sharedInstance] setIv:iv];
+    
+    
+    [self testServerAlive:^(BOOL success) {
+        if (success) {
+            NSLog(@"服务器可用");
+            // 执行服务器可用时的操作，例如初始化SDK等
+        } else {
+            NSLog(@"服务器不可用");
+            // 执行服务器不可用时的操作，例如显示错误消息或重试请求等
+        }
+    }];
+    
+}
 
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    // 检查是否已经跟踪过安装事件
-    if (![defaults boolForKey:@"hasTrackedInstallEvent"]) {
-        [self trackInstallEvent];
-        [defaults setBool:YES forKey:@"hasTrackedInstallEvent"];
-        [defaults synchronize];
-        logMessage(@"第一次安装后启动，上报install");
-    }else{
-        logMessage(@"已经不是第一次安装后启动，不上报isntall");
+
+- (void)initialize{
+    [self firstInstall];
+}
+
+- (void)testServerAlive:(void (^__strong)(BOOL))completion {
+    [[DataUploader sharedInstance] testServerAlive:completion];
+    // 检查网络连接状态
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+    
+    if (networkStatus == NotReachable) {
+        // 网络不可用
+        NSLog(@"当前网络不可用");
+        completion(NO);
+    } else {
+        // 网络可用，发起请求
+        [[DataUploader sharedInstance] testServerAlive:completion];
     }
-    [self trackStartupEvent];
+}
+
+- (void)firstInstall {
+    [self getCaidWithCompletion:^(NSString *caid) {
+        logMessage(@"caid %@",caid);
+        [[TrackingID sharedInstance]setCAID:caid];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        
+        // 检查是否已经跟踪过安装事件
+        if (![defaults boolForKey:@"hasTrackedInstallEvent"]) {
+            [self trackInstallEvent];
+            // 标记已经跟踪过安装事件
+            [defaults setBool:YES forKey:@"hasTrackedInstallEvent"];
+            [defaults synchronize];
+            logMessage(@"第一次安装后启动，上报install");
+            
+        } else {
+            logMessage(@"已经不是第一次安装后启动，不上报install");
+        }
+        [self trackStartupEvent];
+        
+    }];
+}
+
+- (void)getCaidWithCompletion:(void (^)(NSString *trackingID))completion {
+    // 通过 TrackingID 获取 deviceInfo
+    NSDictionary *deviceInfo = [[TrackingID sharedInstance] getDeviceInfo];
+    
+    // 直接通过 requestTrackingID 获取数据
+    [[DataUploader sharedInstance] requestCaidWithCompletion:deviceInfo completion:^(BOOL success, NSString *trackingid) {
+        if (success) {
+            // 如果 requestTrackingID 成功，解析 responseString 获取 trackingID
+            logMessage(@"request trackingid response: %@", trackingid);
+            
+            if (trackingid) {
+                // 如果解析到 trackingID，返回
+                if (completion) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(trackingid);
+                    });
+                }
+            } else {
+                // 如果没有解析到 trackingID，返回 nil
+                if (completion) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        completion(nil);
+                    });
+                }
+            }
+        } else {
+            // 如果 requestTrackingID 失败，返回 nil
+            if (completion) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    completion(nil);
+                });
+            }
+        }
+    }];
 }
 
 - (void)unset:(NSString *)appID
-         serverURL:(NSString *)url{
+    serverURL:(NSString *)url{
     [[LifecycleObserver sharedObserver] stopObserving];
 }
 
@@ -170,7 +250,7 @@
     xcontext[@"os_version"] = [TrackingID.sharedInstance getSystemVersion];
     xcontext[@"idfa"] = [TrackingID.sharedInstance getIDFA];
     xcontext[@"idfv"] = [TrackingID.sharedInstance getIDFV];
-    xcontext[@"caid"] = [TrackingID.sharedInstance getTrackingID];
+    xcontext[@"caid"] = [TrackingID.sharedInstance getCAID];
     xcontext[@"installid"] = [TrackingID.sharedInstance getInstallID];
     xcontext[@"channelid"] = [self getChannelID];
     xcontext[@"pkg_name"] = [TrackingID.sharedInstance getPkgName];
